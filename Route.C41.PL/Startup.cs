@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Route.C41.BLL.Interfaces;
+using Route.C41.BLL.Repositories;
 using Route.C41.DAL.Data;
 using System;
 using System.Collections.Generic;
@@ -20,7 +22,7 @@ namespace Route.C41.PL
         {
             Configuration = configuration;
         }
-
+ 
 
         // This method gets called by the runtime. Use this method to add services to the DI container.
         public void ConfigureServices(IServiceCollection services)
@@ -36,7 +38,9 @@ namespace Route.C41.PL
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
-            });
+            }/*,ServiceLifetime.Scoped*/);
+
+            services.AddScoped<IDepartmentRepository,DepartmentRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,11 +57,12 @@ namespace Route.C41.PL
                 app.UseHsts();
             }
             app.UseHttpsRedirection();
+
             app.UseStaticFiles();
 
             app.UseRouting();
 
-            app.UseAuthorization();
+            //app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
